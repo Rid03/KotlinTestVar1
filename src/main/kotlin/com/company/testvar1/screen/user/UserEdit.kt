@@ -1,5 +1,6 @@
 package com.company.testvar1.screen.user
 
+import com.company.testvar1.entity.OnboardingStatus
 import com.company.testvar1.entity.User
 import io.jmix.core.EntityStates
 import io.jmix.core.security.event.SingleUserPasswordChangeEvent
@@ -12,6 +13,7 @@ import io.jmix.ui.screen.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*
+
 
 @UiController("User.edit")
 @UiDescriptor("user-edit.xml")
@@ -56,6 +58,9 @@ open class UserEdit : StandardEditor<User>() {
         passwordField.isVisible = true
         confirmPasswordField.isVisible = true
         isNewEntity = true
+        val user = event!!.entity
+        user.setOnboardingStatus(OnboardingStatus.NOT_STARTED)
+
     }
 
     @Subscribe

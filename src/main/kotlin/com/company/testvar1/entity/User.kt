@@ -56,6 +56,9 @@ open class User : JmixUserDetails, HasTimeZone {
     @get:JvmName("getTimeZoneId_")
     var timeZoneId: String? = null;
 
+    @Column(name = "ONBOARDING_STATUS")
+    private var onboardingStatus: Int? = null
+
     @Transient
     protected var userAuthorities: Collection<GrantedAuthority?>? = null
 
@@ -82,6 +85,12 @@ open class User : JmixUserDetails, HasTimeZone {
     @get:InstanceName
     val displayName: String
         get() = "${firstName ?: ""} ${lastName ?: ""} [${username ?: ""}]".trim()
+
+    fun getOnboardingStatus(): OnboardingStatus? = onboardingStatus?.let { OnboardingStatus.fromId(it) }
+
+    fun setOnboardingStatus(onboardingStatus: OnboardingStatus?) {
+        this.onboardingStatus = onboardingStatus?.id
+    }
 
     override fun getTimeZoneId(): String? {
         return timeZoneId
