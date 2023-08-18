@@ -4,9 +4,11 @@ import io.jmix.core.HasTimeZone
 import io.jmix.core.annotation.Secret
 import io.jmix.core.entity.annotation.JmixGeneratedValue
 import io.jmix.core.entity.annotation.SystemLevel
+import io.jmix.core.metamodel.annotation.Composition
 import io.jmix.core.metamodel.annotation.DependsOnProperties
 import io.jmix.core.metamodel.annotation.InstanceName
 import io.jmix.core.metamodel.annotation.JmixEntity
+import io.jmix.data.impl.lazyloading.NotInstantiatedList
 import io.jmix.security.authentication.JmixUserDetails
 import org.springframework.security.core.GrantedAuthority
 import java.util.*
@@ -16,7 +18,8 @@ import javax.validation.constraints.Email
 @JmixEntity
 @Entity
 @Table(name = "USER_", indexes = [
-    Index(name = "IDX_USER__ON_USERNAME", columnList = "USERNAME", unique = true)
+    Index(name = "IDX_USER__ON_USERNAME", columnList = "USERNAME", unique = true),
+    Index(name = "IDX_USER__DEPARTMENT", columnList = "DEPARTMENT_ID")
 ])
 open class User : JmixUserDetails, HasTimeZone {
 
@@ -58,6 +61,14 @@ open class User : JmixUserDetails, HasTimeZone {
 
     @Column(name = "ONBOARDING_STATUS")
     private var onboardingStatus: Int? = null
+
+    @JoinColumn(name = "DEPARTMENT_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
+    var department: Department? = null
+
+    @Composition
+    @OneToMany(mappedBy = "user")
+    var steps: MutableList<UserStep> = NotInstantiatedList()
 
     @Transient
     protected var userAuthorities: Collection<GrantedAuthority?>? = null
